@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>سنتر النخبة | ALNOKHBA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-black:#070505;
+    --bg-black-2:#100907;
+    --red-deep:#3a0b0b;
+    --red-mid:#6e1414;
+    --red-glow:rgba(150,20,20,0.45);
+    --gold:#d4af37;
+    --gold-light:#f2dc9b;
+    --gold-dark:#8a6d1f;
+    --cream:#f3ead9;
+    --muted:#b8a888;
+    --card-bg:#120c0a;
+    --card-border:rgba(212,175,55,0.28);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg-black);
+    color:var(--cream);
+    font-family:'Tajawal',sans-serif;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--gold-dark);color:#fff;}
+
+  a{color:inherit;text-decoration:none;}
+  img{max-width:100%;display:block;}
+
+  /* focus visibility for accessibility */
+  a:focus-visible, button:focus-visible, input:focus-visible{
+    outline:2px solid var(--gold-light);
+    outline-offset:3px;
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+
+  /* ---------- Top bar ---------- */
+  header.topbar{
+    position:fixed;
+    inset-inline:0;
+    top:0;
+    z-index:40;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px 22px;
+    background:linear-gradient(180deg, rgba(7,5,5,0.92), rgba(7,5,5,0));
+    backdrop-filter:blur(2px);
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-family:'Aref Ruqaa', serif;
+    font-weight:700;
+    font-size:1.15rem;
+    color:var(--gold-light);
+  }
+  .brand-mark{
+    width:34px;height:34px;
+    border-radius:50%;
+    border:1.5px solid var(--gold);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Aref Ruqaa', serif;
+    color:var(--gold);
+    font-size:1rem;
+    background:radial-gradient(circle at 30% 25%, rgba(212,175,55,0.18), transparent 70%);
+  }
+  .topbar nav a{
+    font-size:0.9rem;
+    color:var(--muted);
+    padding:6px 10px;
+    border-bottom:1px solid transparent;
+    transition:color .2s ease, border-color .2s ease;
+  }
+  .topbar nav a:hover{color:var(--gold-light); border-color:var(--gold-dark);}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    position:relative;
+    min-height:100svh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:120px 20px 80px;
+    overflow:hidden;
+    background:
+      radial-gradient(ellipse 70% 55% at 50% 62%, var(--red-glow), transparent 70%),
+      linear-gradient(180deg, var(--bg-black) 0%, var(--bg-black-2) 45%, var(--red-deep) 100%);
+  }
+  .hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      repeating-radial-gradient(circle at 50% 100%, rgba(212,175,55,0.05) 0, rgba(212,175,55,0.05) 1px, transparent 1px, transparent 46px);
+    opacity:.5;
+    pointer-events:none;
+  }
+  .crest{
+    width:150px;height:150px;
+    margin-bottom:26px;
+    position:relative;
+    z-index:1;
+    filter:drop-shadow(0 0 26px rgba(212,175,55,0.35));
+    animation:crest-in 1.1s cubic-bezier(.2,.8,.2,1) both;
+  }
+  @keyframes crest-in{
+    from{opacity:0; transform:translateY(14px) scale(.94);}
+    to{opacity:1; transform:translateY(0) scale(1);}
+  }
+  .crest svg{width:100%;height:100%;}
+
+  .hero h1{
+    font-family:'Aref Ruqaa', serif;
+    font-weight:700;
+    font-size:clamp(2.6rem, 7vw, 4.4rem);
+    margin:0 0 6px;
+    color:var(--gold-light);
+    letter-spacing:.5px;
+    z-index:1;
+  }
+  .hero .wordmark{
+    font-family:'Tajawal',sans-serif;
+    font-weight:500;
+    font-size:0.95rem;
+    color:var(--muted);
+    letter-spacing:4px;
+    margin-bottom:4px;
+    z-index:1;
+  }
+  .hero .since{
+    font-family:'Tajawal',sans-serif;
+    font-weight:700;
+    font-size:0.8rem;
+    color:var(--gold-dark);
+    letter-spacing:2px;
+    margin-bottom:26px;
+    z-index:1;
+  }
+  .hero p.lead{
+    max-width:520px;
+    color:var(--muted);
+    font-size:1.05rem;
+    z-index:1;
+    margin:0 0 34px;
+  }
+  .hero .cta{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:14px 32px;
+    border:1.5px solid var(--gold);
+    border-radius:2px;
+    color:var(--gold-light);
+    font-weight:700;
+    font-size:1rem;
+    background:linear-gradient(180deg, rgba(212,175,55,0.08), transparent);
+    transition:background .25s ease, transform .25s ease;
+    z-index:1;
+  }
+  .hero .cta:hover{background:rgba(212,175,55,0.16); transform:translateY(-2px);}
+
+  .scroll-hint{
+    position:absolute;
+    bottom:26px;
+    left:50%;
+    transform:translateX(-50%);
+    width:1px;height:46px;
+    background:linear-gradient(180deg, var(--gold-dark), transparent);
+    z-index:1;
+  }
+
+  /* ---------- Links section ---------- */
+  section.links{
+    padding:90px 20px 60px;
+    max-width:880px;
+    margin:0 auto;
+  }
+  .section-head{
+    text-align:center;
+    margin-bottom:46px;
+  }
+  .section-head h2{
+    font-family:'Aref Ruqaa', serif;
+    color:var(--gold-light);
+    font-size:clamp(1.8rem, 4vw, 2.4rem);
+    margin:0 0 10px;
+  }
+  .section-head p{
+    color:var(--muted);
+    max-width:460px;
+    margin:0 auto;
+    font-size:0.98rem;
+  }
+
+  .link-list{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+  }
+  @media (max-width:640px){
+    .link-list{grid-template-columns:1fr;}
+  }
+
+  .plaque{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    padding:18px 20px;
+    background:linear-gradient(180deg, var(--card-bg), #0a0605);
+    border:1px solid var(--card-border);
+    border-radius:4px;
+    position:relative;
+    transition:border-color .25s ease, transform .25s ease, box-shadow .25s ease;
+  }
+  .plaque::before{
+    content:"";
+    position:absolute; inset:5px;
+    border:1px solid rgba(212,175,55,0.08);
+    border-radius:2px;
+    pointer-events:none;
+  }
+  .plaque:hover{
+    border-color:var(--gold);
+    transform:translateY(-3px);
+    box-shadow:0 10px 30px -12px rgba(212,175,55,0.35);
+  }
+  .plaque .icon{
+    flex:0 0 auto;
+    width:52px;height:52px;
+    border-radius:50%;
+    border:1.5px solid var(--gold-dark);
+    display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(circle at 35% 30%, rgba(212,175,55,0.14), transparent 70%);
+  }
+  .plaque .icon svg{width:24px;height:24px;fill:var(--gold-light);}
+  .plaque .info{flex:1; min-width:0;}
+  .plaque .info .platform{
+    display:block;
+    font-weight:700;
+    color:var(--gold-light);
+    font-size:1.02rem;
+    margin-bottom:2px;
+  }
+  .plaque .info .label{
+    display:block;
+    color:var(--muted);
+    font-size:0.88rem;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .plaque .go{
+    flex:0 0 auto;
+    color:var(--gold-dark);
+    font-size:1.3rem;
+    transform:scaleX(-1); /* rtl-friendly chevron */
+  }
+
+  .empty-hint{
+    text-align:center;
+    color:var(--muted);
+    padding:30px;
+    border:1px dashed var(--card-border);
+    border-radius:4px;
+    display:none;
+  }
+
+  /* ---------- About strip ---------- */
+  section.about{
+    max-width:720px;
+    margin:20px auto 90px;
+    padding:34px 28px;
+    text-align:center;
+    border-top:1px solid var(--card-border);
+    border-bottom:1px solid var(--card-border);
+  }
+  section.about h3{
+    font-family:'Aref Ruqaa', serif;
+    color:var(--gold-light);
+    font-size:1.5rem;
+    margin:0 0 12px;
+  }
+  section.about p{color:var(--muted); font-size:0.98rem; margin:0;}
+
+  /* ---------- Footer ---------- */
+  footer{
+    padding:40px 20px 30px;
+    text-align:center;
+    border-top:1px solid var(--card-border);
+  }
+  footer .crest-mini{
+    width:40px;height:40px;
+    margin:0 auto 14px;
+    opacity:.9;
+  }
+  footer .contact{
+    color:var(--muted);
+    font-size:0.9rem;
+    margin-bottom:6px;
+  }
+  footer .contact a{color:var(--gold-dark); border-bottom:1px dotted var(--gold-dark);}
+  footer .contact a:hover{color:var(--gold-light);}
+  footer .fine{
+    margin-top:18px;
+    font-size:0.78rem;
+    color:#6b5f4d;
+  }
+  footer .admin-toggle{
+    display:inline-block;
+    margin-top:16px;
+    font-size:0.8rem;
+    color:#6b5f4d;
+    border-bottom:1px dotted #6b5f4d;
+  }
+  footer .admin-toggle:hover{color:var(--muted);}
+
+  /* ---------- Hidden admin access (visible only to a recognized admin device) ---------- */
+  .admin-fab{
+    position:fixed;
+    bottom:18px;
+    inset-inline-start:18px;
+    z-index:60;
+    width:38px;height:38px;
+    border-radius:50%;
+    border:1px solid var(--card-border);
+    background:rgba(10,7,6,0.85);
+    color:var(--gold-dark);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    font-size:1rem;
+    backdrop-filter:blur(2px);
+    transition:border-color .2s ease, color .2s ease;
+  }
+  .admin-fab.visible{display:flex;}
+  .admin-fab:hover{border-color:var(--gold); color:var(--gold-light);}
+
+  /* ---------- Admin modal ---------- */
+  .modal-overlay{
+    position:fixed; inset:0;
+    background:rgba(4,3,2,0.82);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:100;
+    padding:20px;
+  }
+  .modal-overlay.open{display:flex;}
+  .modal{
+    width:100%;
+    max-width:420px;
+    background:var(--bg-black-2);
+    border:1px solid var(--card-border);
+    border-radius:6px;
+    padding:28px 26px;
+    max-height:86vh;
+    overflow-y:auto;
+  }
+  .modal h4{
+    font-family:'Aref Ruqaa', serif;
+    color:var(--gold-light);
+    font-size:1.4rem;
+    margin:0 0 6px;
+  }
+  .modal .sub{color:var(--muted); font-size:0.85rem; margin:0 0 20px;}
+  .field{margin-bottom:14px;}
+  .field label{
+    display:block;
+    font-size:0.82rem;
+    color:var(--muted);
+    margin-bottom:6px;
+  }
+  .field input, .field select{
+    width:100%;
+    padding:11px 12px;
+    background:#0c0807;
+    border:1px solid var(--card-border);
+    border-radius:3px;
+    color:var(--cream);
+    font-family:'Tajawal',sans-serif;
+    font-size:0.92rem;
+  }
+  .field input:focus, .field select:focus{border-color:var(--gold);}
+  .modal .row{display:flex; gap:10px;}
+  .btn{
+    width:100%;
+    padding:12px;
+    border:1.5px solid var(--gold);
+    background:transparent;
+    color:var(--gold-light);
+    font-family:'Tajawal',sans-serif;
+    font-weight:700;
+    border-radius:3px;
+    cursor:pointer;
+    transition:background .2s ease;
+  }
+  .btn:hover{background:rgba(212,175,55,0.12);}
+  .btn.ghost{border-color:var(--card-border); color:var(--muted);}
+  .modal .msg{
+    font-size:0.85rem;
+    margin-top:10px;
+    min-height:18px;
+  }
+  .modal .msg.error{color:#e07a7a;}
+  .modal .msg.ok{color:#8fce9a;}
+  .modal .close-x{
+    float:left;
+    color:var(--muted);
+    cursor:pointer;
+    font-size:1.3rem;
+    line-height:1;
+  }
+  .manage-list{
+    margin-top:22px;
+    border-top:1px solid var(--card-border);
+    padding-top:16px;
+  }
+  .manage-list h5{
+    font-size:0.85rem;
+    color:var(--muted);
+    margin:0 0 10px;
+    font-weight:500;
+  }
+  .manage-item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:8px 0;
+    border-bottom:1px solid rgba(212,175,55,0.1);
+    font-size:0.85rem;
+  }
+  .manage-item span{color:var(--cream); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .manage-item button{
+    background:none;
+    border:1px solid rgba(224,122,122,0.4);
+    color:#e07a7a;
+    border-radius:3px;
+    padding:3px 9px;
+    font-size:0.75rem;
+    cursor:pointer;
+  }
+  .manage-item button:hover{background:rgba(224,122,122,0.12);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">ن</span>
+    سنتر النخبة
+  </div>
+  <nav>
+    <a href="#links">روابط المتابعة</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="crest" aria-hidden="true">
+    <svg viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#f2dc9b"/>
+          <stop offset="50%" stop-color="#d4af37"/>
+          <stop offset="100%" stop-color="#8a6d1f"/>
+        </linearGradient>
+      </defs>
+      <path d="M50 5 L92 20 V55 C92 82 74 100 50 108 C26 100 8 82 8 55 V20 Z"
+            fill="#150c0a" stroke="url(#goldGrad)" stroke-width="2.2"/>
+      <path d="M50 12 L86 25 V54 C86 78 70 94 50 101 C30 94 14 78 14 54 V25 Z"
+            fill="none" stroke="url(#goldGrad)" stroke-width="0.8" opacity="0.6"/>
+      <!-- crown -->
+      <path d="M32 40 L38 30 L44 38 L50 27 L56 38 L62 30 L68 40 L64 47 H36 Z"
+            fill="url(#goldGrad)"/>
+      <circle cx="50" cy="49" r="2.4" fill="url(#goldGrad)"/>
+      <!-- star row -->
+      <g fill="url(#goldGrad)">
+        <circle cx="26" cy="46" r="1.6"/>
+        <circle cx="36" cy="40" r="1.8"/>
+        <circle cx="50" cy="37" r="2"/>
+        <circle cx="64" cy="40" r="1.8"/>
+        <circle cx="74" cy="46" r="1.6"/>
+      </g>
+      <text x="50" y="70" text-anchor="middle" font-family="'Aref Ruqaa', serif"
+            font-size="19" fill="url(#goldGrad)">النخبة</text>
+      <text x="50" y="86" text-anchor="middle" font-family="Tajawal, sans-serif"
+            font-size="6.5" letter-spacing="2" fill="#d9c185">ALNOKHBA</text>
+      <line x1="35" y1="90" x2="65" y2="90" stroke="url(#goldGrad)" stroke-width="0.6"/>
+      <text x="50" y="98" text-anchor="middle" font-family="Tajawal, sans-serif"
+            font-size="6" letter-spacing="1.5" fill="#8a6d1f">SINCE 1999</text>
+    </svg>
+  </div>
+
+  <div class="wordmark">ALNOKHBA CENTER</div>
+  <h1>سنتر النخبة</h1>
+  <div class="since">SINCE 1999</div>
+
+  <p class="lead">
+    تجمّع طلاب الجامعة في مكان واحد. تابع كل جديد عن المحاضرات والمراجعات
+    أول بأول من خلال قنوات المتابعة الرسمية بتاعتنا.
+  </p>
+
+  <a href="#links" class="cta">شوف قنوات المتابعة</a>
+  <div class="scroll-hint" aria-hidden="true"></div>
+</section>
+
+<section class="links" id="links">
+  <div class="section-head">
+    <h2>تابعنا من هنا</h2>
+    <p>الجروبات والقنوات اللي بنشارك فيها كل حاجة خاصة بشغل السنتر الجامعي.</p>
+  </div>
+
+  <div class="link-list" id="linkList"><!-- rendered by JS --></div>
+  <div class="empty-hint" id="emptyHint">لسه مفيش روابط مضافة.</div>
+</section>
+
+<section class="about">
+  <h3>عن السنتر</h3>
+  <p>
+    سنتر النخبة بيقدّم متابعة تعليمية لطلاب الجامعة، وكل الجروبات والقنوات
+    اللي هتلاقيها فوق دي المكان اللي بننشر فيه الأخبار والمواعيد والمواد أول بأول.
+  </p>
+</section>
+
+<footer>
+  <div class="fine">© سنتر النخبة — منذ 1999</div>
+</footer>
+
+<!-- Hidden admin entry point: only appears once this browser has logged in before -->
+<button class="admin-fab" id="adminFab" title="لوحة التحكم" aria-label="لوحة التحكم">⚙</button>
+
+<!-- Admin modal -->
+<div class="modal-overlay" id="adminOverlay">
+  <div class="modal">
+    <span class="close-x" id="closeAdmin">×</span>
+    <div style="clear:both;"></div>
+
+    <div id="loginView">
+      <h4>لوحة التحكم</h4>
+      <p class="sub">الدخول متاح للأدمن بس، لإضافة أو تعديل أو حذف روابط المتابعة.</p>
+      <div class="field">
+        <label for="adminPass">كلمة المرور</label>
+        <input type="password" id="adminPass" placeholder="••••••••">
+      </div>
+      <button class="btn" id="loginBtn">دخول</button>
+      <p class="msg error" id="loginMsg"></p>
+    </div>
+
+    <div id="panelView" style="display:none;">
+      <h4 id="formTitle">إضافة رابط جديد</h4>
+      <p class="sub">اختار المنصة، اكتب الاسم اللي هيظهر، والصق الرابط.</p>
+
+      <div class="field">
+        <label for="platformSelect">المنصة</label>
+        <select id="platformSelect">
+          <option value="facebook">فيسبوك</option>
+          <option value="telegram">تليجرام</option>
+          <option value="whatsapp">واتساب</option>
+          <option value="tiktok">تيك توك</option>
+          <option value="instagram">انستجرام</option>
+          <option value="other">منصة تانية</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="labelInput">الاسم اللي هيظهر</label>
+        <input type="text" id="labelInput" placeholder="مثال: جروب المراجعة النهائية">
+      </div>
+      <div class="field">
+        <label for="urlInput">الرابط</label>
+        <input type="url" id="urlInput" placeholder="https://...">
+      </div>
+      <div class="row">
+        <button class="btn" id="addLinkBtn">إضافة الرابط</button>
+        <button class="btn ghost" id="cancelEditBtn" style="display:none;">إلغاء التعديل</button>
+      </div>
+      <p class="msg" id="addMsg"></p>
+
+      <div class="manage-list">
+        <h5>كل الروابط الحالية</h5>
+        <div id="manageList"></div>
+      </div>
+
+      <div style="margin-top:18px;">
+        <button class="btn ghost" id="logoutBtn">خروج</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ----- links the center starts with (seeded into storage on first visit) ----- */
+  var SEED_LINKS = [
+    { id:"d1", platform:"facebook", label:"جروب فيسبوك — السنتر الجامعي", url:"https://www.facebook.com/share/g/1MykRxUSnW/" },
+    { id:"d2", platform:"telegram", label:"قناة تليجرام", url:"https://t.me/+-4vwl6iQJVNiYTI0" },
+    { id:"d3", platform:"whatsapp", label:"جروب واتساب", url:"https://chat.whatsapp.com/LU2cXVjrsW4EQr17YUXahN" },
+    { id:"d4", platform:"tiktok",   label:"تيك توك", url:"https://www.tiktok.com/@elnokhbacenter?_r=1&_t=ZS-99VT1PbjBUQ" }
+  ];
+
+  var PLATFORM_META = {
+    facebook:{ name:"فيسبوك", icon:iconFacebook() },
+    telegram:{ name:"تليجرام", icon:iconTelegram() },
+    whatsapp:{ name:"واتساب", icon:iconWhatsapp() },
+    tiktok:{ name:"تيك توك", icon:iconTiktok() },
+    instagram:{ name:"انستجرام", icon:iconInstagram() },
+    other:{ name:"رابط", icon:iconLink() }
+  };
+
+  var LINKS_KEY = "elnokhba_links_v2";
+  var SESSION_KEY = "elnokhba_admin_session_v1";
+  var ADMIN_PASS = "elnokhba1999"; // demo password — change before real launch
+  var SECRET_HASH = "#nokhba-admin"; // only people with this exact link can reach the login form
+
+  function iconFacebook(){return '<svg viewBox="0 0 24 24"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.94v-7.03H7.9v-2.91h2.54V9.86c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.44 2.91h-2.34V22c4.78-.79 8.44-4.94 8.44-9.94Z"/></svg>';}
+  function iconTelegram(){return '<svg viewBox="0 0 24 24"><path d="M21.9 4.7 18.5 20.1c-.26 1.15-.94 1.43-1.9.9l-5.25-3.87-2.53 2.44c-.28.28-.52.52-1.06.52l.38-5.4L18.02 6.6c.4-.35-.09-.55-.62-.2L6.7 13.1 1.5 11.47c-1.13-.35-1.15-1.13.24-1.68L20.5 3.06c.94-.35 1.76.21 1.4 1.64Z"/></svg>';}
+  function iconWhatsapp(){return '<svg viewBox="0 0 24 24"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.9c0 1.87.5 3.62 1.44 5.14L2 22l5.13-1.53a9.85 9.85 0 0 0 4.9 1.3h.01c5.46 0 9.9-4.44 9.9-9.9C21.95 6.45 17.5 2 12.04 2Zm5.79 14.06c-.24.68-1.4 1.3-1.93 1.36-.5.06-1.08.09-1.74-.11a17.1 17.1 0 0 1-1.63-.6c-2.87-1.24-4.74-4.14-4.88-4.33-.14-.19-1.17-1.56-1.17-2.98s.73-2.1.99-2.39c.26-.29.57-.36.76-.36h.55c.18 0 .42-.07.65.5.24.58.82 2 .89 2.15.07.15.12.32.02.52-.1.19-.15.31-.29.48-.14.17-.3.37-.43.5-.14.14-.29.29-.13.57.17.29.75 1.24 1.61 2.01 1.11 1 2.05 1.31 2.34 1.46.29.14.46.12.63-.07.17-.19.72-.85.92-1.14.19-.29.38-.24.63-.14.26.1 1.65.78 1.93.92.29.14.48.22.55.34.07.12.07.68-.17 1.36Z"/></svg>';}
+  function iconTiktok(){return '<svg viewBox="0 0 24 24"><path d="M16.6 2h-3.3v13.4a2.9 2.9 0 1 1-2.06-2.78V9.2a6.1 6.1 0 1 0 5.36 6.05V8.9a7.9 7.9 0 0 0 4.4 1.34V6.9a4.4 4.4 0 0 1-4.4-4.4Z"/></svg>';}
+  function iconInstagram(){return '<svg viewBox="0 0 24 24"><path d="M12 2c2.72 0 3.06.01 4.13.06 1.07.05 1.8.22 2.44.47.66.26 1.22.6 1.77 1.16.55.55.9 1.11 1.16 1.77.25.63.42 1.37.47 2.44.05 1.07.06 1.4.06 4.13s-.01 3.06-.06 4.13c-.05 1.07-.22 1.8-.47 2.44a4.9 4.9 0 0 1-1.16 1.77 4.9 4.9 0 0 1-1.77 1.16c-.63.25-1.37.42-2.44.47-1.07.05-1.4.06-4.13.06s-3.06-.01-4.13-.06c-1.07-.05-1.8-.22-2.44-.47a4.9 4.9 0 0 1-1.77-1.16 4.9 4.9 0 0 1-1.16-1.77c-.25-.63-.42-1.37-.47-2.44C2.01 15.06 2 14.72 2 12s.01-3.06.06-4.13c.05-1.07.22-1.8.47-2.44.26-.66.6-1.22 1.16-1.77A4.9 4.9 0 0 1 5.46 2.5c.63-.25 1.37-.42 2.44-.47C8.97 2.01 9.31 2 12 2Zm0 1.8c-2.67 0-2.99.01-4.04.06-.87.04-1.34.18-1.65.3-.42.16-.71.35-1.02.66-.31.31-.5.6-.66 1.02-.12.31-.26.78-.3 1.65C4.28 8.54 4.27 8.86 4.27 11.53v.94c0 2.67.01 2.99.06 4.04.04.87.18 1.34.3 1.65.16.42.35.71.66 1.02.31.31.6.5 1.02.66.31.12.78.26 1.65.3 1.05.05 1.37.06 4.04.06s2.99-.01 4.04-.06c.87-.04 1.34-.18 1.65-.3.42-.16.71-.35 1.02-.66.31-.31.5-.6.66-1.02.12-.31.26-.78.3-1.65.05-1.05.06-1.37.06-4.04v-.94c0-2.67-.01-2.99-.06-4.04-.04-.87-.18-1.34-.3-1.65a2.7 2.7 0 0 0-.66-1.02 2.7 2.7 0 0 0-1.02-.66c-.31-.12-.78-.26-1.65-.3C14.99 3.81 14.67 3.8 12 3.8Zm0 3.06a5.14 5.14 0 1 1 0 10.28 5.14 5.14 0 0 1 0-10.28Zm0 1.8a3.34 3.34 0 1 0 0 6.68 3.34 3.34 0 0 0 0-6.68Zm5.34-2.06a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4Z"/></svg>';}
+  function iconLink(){return '<svg viewBox="0 0 24 24"><path d="M10.6 13.4a1 1 0 0 1 0-1.4l3-3a3 3 0 1 1 4.24 4.24l-1.5 1.5a1 1 0 1 1-1.41-1.41l1.5-1.5a1 1 0 1 0-1.42-1.42l-3 3a1 1 0 0 1-1.41 0Zm-4.24 4.24a3 3 0 0 1 0-4.24l1.5-1.5a1 1 0 1 1 1.41 1.41l-1.5 1.5a1 1 0 1 0 1.42 1.42l3-3a1 1 0 0 1 1.41 1.41l-3 3a3 3 0 0 1-4.24 0Z"/></svg>';}
+
+  function esc(s){
+    var d = document.createElement("div");
+    d.innerText = s;
+    return d.innerHTML;
+  }
+
+  function getLinks(){
+    try{
+      var raw = localStorage.getItem(LINKS_KEY);
+      if(!raw){
+        localStorage.setItem(LINKS_KEY, JSON.stringify(SEED_LINKS));
+        return SEED_LINKS.slice();
+      }
+      return JSON.parse(raw);
+    }catch(e){ return SEED_LINKS.slice(); }
+  }
+  function saveLinks(list){
+    try{
+      localStorage.setItem(LINKS_KEY, JSON.stringify(list));
+      return true;
+    }catch(e){ return false; }
+  }
+  function makeId(){
+    return "l" + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+  }
+
+  function renderLinks(){
+    var listEl = document.getElementById("linkList");
+    var emptyEl = document.getElementById("emptyHint");
+    var all = getLinks();
+
+    listEl.innerHTML = "";
+    if(all.length === 0){
+      emptyEl.style.display = "block";
+      return;
+    }
+    emptyEl.style.display = "none";
+
+    all.forEach(function(item){
+      var meta = PLATFORM_META[item.platform] || PLATFORM_META.other;
+      var a = document.createElement("a");
+      a.className = "plaque";
+      a.href = item.url;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.innerHTML =
+        '<span class="icon">' + meta.icon + '</span>' +
+        '<span class="info">' +
+          '<span class="platform">' + esc(meta.name) + '</span>' +
+          '<span class="label">' + esc(item.label) + '</span>' +
+        '</span>' +
+        '<span class="go" aria-hidden="true">‹</span>';
+      listEl.appendChild(a);
+    });
+  }
+
+  var editingId = null;
+
+  function renderManageList(){
+    var wrap = document.getElementById("manageList");
+    var all = getLinks();
+    wrap.innerHTML = "";
+    if(all.length === 0){
+      wrap.innerHTML = '<p style="color:var(--muted); font-size:0.82rem;">لسه مفيش روابط.</p>';
+      return;
+    }
+    all.forEach(function(item){
+      var row = document.createElement("div");
+      row.className = "manage-item";
+      var meta = PLATFORM_META[item.platform] || PLATFORM_META.other;
+      row.innerHTML =
+        '<span>' + esc(meta.name) + ' — ' + esc(item.label) + '</span>' +
+        '<span style="display:flex; gap:6px; flex:0 0 auto;">' +
+          '<button data-edit="' + item.id + '" style="border-color:rgba(212,175,55,0.4); color:var(--gold-light);">تعديل</button>' +
+          '<button data-del="' + item.id + '">حذف</button>' +
+        '</span>';
+      wrap.appendChild(row);
+    });
+    wrap.querySelectorAll("button[data-del]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var id = btn.getAttribute("data-del");
+        var list = getLinks().filter(function(l){ return l.id !== id; });
+        saveLinks(list);
+        renderManageList();
+        renderLinks();
+      });
+    });
+    wrap.querySelectorAll("button[data-edit]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var id = btn.getAttribute("data-edit");
+        var item = getLinks().find(function(l){ return l.id === id; });
+        if(!item) return;
+        editingId = id;
+        document.getElementById("platformSelect").value = item.platform;
+        document.getElementById("labelInput").value = item.label;
+        document.getElementById("urlInput").value = item.url;
+        document.getElementById("formTitle").textContent = "تعديل الرابط";
+        document.getElementById("addLinkBtn").textContent = "حفظ التعديل";
+        document.getElementById("cancelEditBtn").style.display = "block";
+        document.getElementById("addMsg").textContent = "";
+        window.scrollTo(0,0);
+        document.querySelector(".modal").scrollTop = 0;
+      });
+    });
+  }
+
+  function resetForm(){
+    editingId = null;
+    document.getElementById("platformSelect").value = "facebook";
+    document.getElementById("labelInput").value = "";
+    document.getElementById("urlInput").value = "";
+    document.getElementById("formTitle").textContent = "إضافة رابط جديد";
+    document.getElementById("addLinkBtn").textContent = "إضافة الرابط";
+    document.getElementById("cancelEditBtn").style.display = "none";
+  }
+
+  document.getElementById("cancelEditBtn").addEventListener("click", function(){
+    resetForm();
+    document.getElementById("addMsg").textContent = "";
+  });
+
+  /* ----- admin access: hidden entry + recognized-device shortcut ----- */
+  var overlay = document.getElementById("adminOverlay");
+  var loginView = document.getElementById("loginView");
+  var panelView = document.getElementById("panelView");
+  var fab = document.getElementById("adminFab");
+
+  function isRecognizedAdmin(){
+    try{ return localStorage.getItem(SESSION_KEY) === "1"; }
+    catch(e){ return false; }
+  }
+  function setRecognizedAdmin(on){
+    try{ localStorage.setItem(SESSION_KEY, on ? "1" : "0"); }catch(e){}
+  }
+
+  function openPanel(){
+    overlay.classList.add("open");
+    loginView.style.display = "none";
+    panelView.style.display = "block";
+    resetForm();
+    renderManageList();
+  }
+  function openLogin(){
+    overlay.classList.add("open");
+    loginView.style.display = "block";
+    panelView.style.display = "none";
+    document.getElementById("adminPass").value = "";
+    document.getElementById("loginMsg").textContent = "";
+  }
+
+  // show the small gear only to a browser that has already logged in successfully before
+  if(isRecognizedAdmin()){
+    fab.classList.add("visible");
+  }
+  fab.addEventListener("click", function(){
+    if(isRecognizedAdmin()) openPanel();
+    else openLogin();
+  });
+
+  // hidden entry point: visiting the site with #nokhba-admin opens the login form,
+  // then the hash is removed so it doesn't linger in the address bar or browser history
+  if(window.location.hash === SECRET_HASH){
+    openLogin();
+    history.replaceState(null, "", window.location.pathname + window.location.search);
+  }
+
+  document.getElementById("closeAdmin").addEventListener("click", function(){
+    overlay.classList.remove("open");
+  });
+  overlay.addEventListener("click", function(e){
+    if(e.target === overlay) overlay.classList.remove("open");
+  });
+
+  document.getElementById("loginBtn").addEventListener("click", function(){
+    var val = document.getElementById("adminPass").value;
+    var msg = document.getElementById("loginMsg");
+    if(val === ADMIN_PASS){
+      setRecognizedAdmin(true);
+      fab.classList.add("visible");
+      openPanel();
+    } else {
+      msg.textContent = "كلمة المرور غلط، جرّب تاني.";
+    }
+  });
+
+  document.getElementById("logoutBtn").addEventListener("click", function(){
+    setRecognizedAdmin(false);
+    fab.classList.remove("visible");
+    overlay.classList.remove("open");
+  });
+
+  document.getElementById("addLinkBtn").addEventListener("click", function(){
+    var platform = document.getElementById("platformSelect").value;
+    var label = document.getElementById("labelInput").value.trim();
+    var url = document.getElementById("urlInput").value.trim();
+    var msg = document.getElementById("addMsg");
+
+    if(!label || !url){
+      msg.className = "msg error";
+      msg.textContent = "من فضلك اكتب الاسم والرابط.";
+      return;
+    }
+    try{ new URL(url); }
+    catch(e){
+      msg.className = "msg error";
+      msg.textContent = "الرابط لازم يبدأ بـ https:// وميكونش فيه أخطاء.";
+      return;
+    }
+
+    var list = getLinks();
+    var ok;
+    if(editingId){
+      list = list.map(function(l){
+        return l.id === editingId ? { id:l.id, platform:platform, label:label, url:url } : l;
+      });
+      ok = saveLinks(list);
+      if(ok) msg.textContent = "تم حفظ التعديل.";
+    } else {
+      list.push({ id:makeId(), platform:platform, label:label, url:url });
+      ok = saveLinks(list);
+      if(ok) msg.textContent = "تمت إضافة الرابط.";
+    }
+
+    if(ok){
+      msg.className = "msg ok";
+      resetForm();
+      renderManageList();
+      renderLinks();
+    } else {
+      msg.className = "msg error";
+      msg.textContent = "المتصفح مانعش الحفظ، جرّب تفتح الموقع بعد رفعه على الاستضافة.";
+    }
+  });
+
+  renderLinks();
+})();
+</script>
+</body>
+</html>
