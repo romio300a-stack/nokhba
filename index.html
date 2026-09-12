@@ -561,8 +561,12 @@
 (function(){
   "use strict";
 
-  /* this team starts with an empty list — the admin adds every link by hand */
-  var SEED_LINKS = [];
+  /* ============================================================
+     اتصال بالـ Backend المركزي بدل localStorage
+     غيّر BACKEND_URL بعد ما تنشر الباك إند على Vercel
+     ============================================================ */
+  var BACKEND_URL = "https://nokhba-backend.vercel.app"; // TODO: حط رابط الباك إند الحقيقي هنا
+  var SITE_ID = "site1"; // ثابت لهذا الموقع — لا تغيّره
 
   var PLATFORM_META = {
     facebook:{ name:"فيسبوك", icon:iconFacebook() },
@@ -573,9 +577,6 @@
     other:{ name:"رابط", icon:iconLink() }
   };
 
-  var LINKS_KEY = "elnokhba_tejara_links_v1";
-  var SESSION_KEY = "elnokhba_tejara_admin_session_v1";
-  var ADMIN_PASS = "nokhbatejara2026"; // demo password — change before real launch
   var SECRET_HASH = "#nokhba-tejara-admin"; // only people with this exact link can reach the login form
 
   function iconFacebook(){return '<svg viewBox="0 0 24 24"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.94v-7.03H7.9v-2.91h2.54V9.86c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.44 2.91h-2.34V22c4.78-.79 8.44-4.94 8.44-9.94Z"/></svg>';}
@@ -591,57 +592,76 @@
     return d.innerHTML;
   }
 
-  function getLinks(){
-    try{
-      var raw = localStorage.getItem(LINKS_KEY);
-      if(!raw){
-        localStorage.setItem(LINKS_KEY, JSON.stringify(SEED_LINKS));
-        return SEED_LINKS.slice();
-      }
-      return JSON.parse(raw);
-    }catch(e){ return SEED_LINKS.slice(); }
-  }
-  function saveLinks(list){
-    try{
-      localStorage.setItem(LINKS_KEY, JSON.stringify(list));
-      return true;
-    }catch(e){ return false; }
-  }
   function makeId(){
     return "l" + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+  }
+
+  /* -------- طبقة الاتصال بالباك إند -------- */
+  function api(path, options){
+    options = options || {};
+    options.credentials = "include"; // عشان كوكي الجلسة (JWT) يتبعت ويترجع
+    if(options.body && typeof options.body !== "string"){
+      options.body = JSON.stringify(options.body);
+    }
+    options.headers = Object.assign({ "Content-Type": "application/json" }, options.headers || {});
+    return fetch(BACKEND_URL + path, options).then(function(res){
+      return res.json().catch(function(){ return {}; }).then(function(data){
+        if(!res.ok){
+          var err = new Error(data && data.error ? data.error : "حصل خطأ، حاول تاني.");
+          err.status = res.status;
+          throw err;
+        }
+        return data;
+      });
+    });
+  }
+
+  var cachedLinks = [];
+
+  function fetchLinks(){
+    return api("/api/links?site=" + encodeURIComponent(SITE_ID), { method:"GET" })
+      .then(function(data){
+        cachedLinks = data.links || [];
+        return cachedLinks;
+      })
+      .catch(function(){
+        cachedLinks = [];
+        return cachedLinks;
+      });
   }
 
   function renderLinks(){
     var listEl = document.getElementById("linkList");
     var emptyEl = document.getElementById("emptyHint");
     var countEl = document.getElementById("countLabel");
-    var all = getLinks();
 
-    listEl.innerHTML = "";
-    countEl.textContent = all.length ? (all.length + " رابط") : "";
+    return fetchLinks().then(function(all){
+      listEl.innerHTML = "";
+      countEl.textContent = all.length ? (all.length + " رابط") : "";
 
-    if(all.length === 0){
-      emptyEl.style.display = "block";
-      return;
-    }
-    emptyEl.style.display = "none";
+      if(all.length === 0){
+        emptyEl.style.display = "block";
+        return;
+      }
+      emptyEl.style.display = "none";
 
-    all.forEach(function(item, i){
-      var meta = PLATFORM_META[item.platform] || PLATFORM_META.other;
-      var a = document.createElement("a");
-      a.className = "link-row";
-      a.href = item.url;
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
-      a.innerHTML =
-        '<span class="idx">' + String(i+1).padStart(2,"0") + '</span>' +
-        '<span class="chip">' + meta.icon + '</span>' +
-        '<span class="info">' +
-          '<span class="platform">' + esc(meta.name) + '</span>' +
-          '<span class="label">' + esc(item.label) + '</span>' +
-        '</span>' +
-        '<span class="go" aria-hidden="true">‹</span>';
-      listEl.appendChild(a);
+      all.forEach(function(item, i){
+        var meta = PLATFORM_META[item.platform] || PLATFORM_META.other;
+        var a = document.createElement("a");
+        a.className = "link-row";
+        a.href = item.url;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.innerHTML =
+          '<span class="idx">' + String(i+1).padStart(2,"0") + '</span>' +
+          '<span class="chip">' + meta.icon + '</span>' +
+          '<span class="info">' +
+            '<span class="platform">' + esc(meta.name) + '</span>' +
+            '<span class="label">' + esc(item.label) + '</span>' +
+          '</span>' +
+          '<span class="go" aria-hidden="true">‹</span>';
+        listEl.appendChild(a);
+      });
     });
   }
 
@@ -649,47 +669,55 @@
 
   function renderManageList(){
     var wrap = document.getElementById("manageList");
-    var all = getLinks();
-    wrap.innerHTML = "";
-    if(all.length === 0){
-      wrap.innerHTML = '<p style="color:var(--muted); font-size:0.82rem;">لسه مفيش روابط.</p>';
-      return;
-    }
-    all.forEach(function(item){
-      var row = document.createElement("div");
-      row.className = "manage-item";
-      var meta = PLATFORM_META[item.platform] || PLATFORM_META.other;
-      row.innerHTML =
-        '<span>' + esc(meta.name) + ' — ' + esc(item.label) + '</span>' +
-        '<span class="btns">' +
-          '<button class="edit-btn" data-edit="' + item.id + '">تعديل</button>' +
-          '<button data-del="' + item.id + '">حذف</button>' +
-        '</span>';
-      wrap.appendChild(row);
-    });
-    wrap.querySelectorAll("button[data-del]").forEach(function(btn){
-      btn.addEventListener("click", function(){
-        var id = btn.getAttribute("data-del");
-        var list = getLinks().filter(function(l){ return l.id !== id; });
-        saveLinks(list);
-        renderManageList();
-        renderLinks();
+    wrap.innerHTML = '<p style="color:var(--muted); font-size:0.82rem;">بيتحمّل...</p>';
+
+    return fetchLinks().then(function(all){
+      wrap.innerHTML = "";
+      if(all.length === 0){
+        wrap.innerHTML = '<p style="color:var(--muted); font-size:0.82rem;">لسه مفيش روابط.</p>';
+        return;
+      }
+      all.forEach(function(item){
+        var row = document.createElement("div");
+        row.className = "manage-item";
+        var meta = PLATFORM_META[item.platform] || PLATFORM_META.other;
+        row.innerHTML =
+          '<span>' + esc(meta.name) + ' — ' + esc(item.label) + '</span>' +
+          '<span class="btns">' +
+            '<button class="edit-btn" data-edit="' + item.id + '">تعديل</button>' +
+            '<button data-del="' + item.id + '">حذف</button>' +
+          '</span>';
+        wrap.appendChild(row);
       });
-    });
-    wrap.querySelectorAll("button[data-edit]").forEach(function(btn){
-      btn.addEventListener("click", function(){
-        var id = btn.getAttribute("data-edit");
-        var item = getLinks().find(function(l){ return l.id === id; });
-        if(!item) return;
-        editingId = id;
-        document.getElementById("platformSelect").value = item.platform;
-        document.getElementById("labelInput").value = item.label;
-        document.getElementById("urlInput").value = item.url;
-        document.getElementById("formTitle").textContent = "تعديل الرابط";
-        document.getElementById("addLinkBtn").textContent = "حفظ التعديل";
-        document.getElementById("cancelEditBtn").style.display = "block";
-        document.getElementById("addMsg").textContent = "";
-        document.querySelector(".modal").scrollTop = 0;
+      wrap.querySelectorAll("button[data-del]").forEach(function(btn){
+        btn.addEventListener("click", function(){
+          var id = btn.getAttribute("data-del");
+          btn.disabled = true;
+          api("/api/links/" + encodeURIComponent(id), { method:"DELETE" })
+            .then(function(){
+              return Promise.all([renderManageList(), renderLinks()]);
+            })
+            .catch(function(e){
+              alert(e.message || "معرفتش أحذف الرابط.");
+              btn.disabled = false;
+            });
+        });
+      });
+      wrap.querySelectorAll("button[data-edit]").forEach(function(btn){
+        btn.addEventListener("click", function(){
+          var id = btn.getAttribute("data-edit");
+          var item = cachedLinks.find(function(l){ return l.id === id; });
+          if(!item) return;
+          editingId = id;
+          document.getElementById("platformSelect").value = item.platform;
+          document.getElementById("labelInput").value = item.label;
+          document.getElementById("urlInput").value = item.url;
+          document.getElementById("formTitle").textContent = "تعديل الرابط";
+          document.getElementById("addLinkBtn").textContent = "حفظ التعديل";
+          document.getElementById("cancelEditBtn").style.display = "block";
+          document.getElementById("addMsg").textContent = "";
+          document.querySelector(".modal").scrollTop = 0;
+        });
       });
     });
   }
@@ -714,12 +742,11 @@
   var panelView = document.getElementById("panelView");
   var fab = document.getElementById("adminFab");
 
-  function isRecognizedAdmin(){
-    try{ return localStorage.getItem(SESSION_KEY) === "1"; }
-    catch(e){ return false; }
-  }
-  function setRecognizedAdmin(on){
-    try{ localStorage.setItem(SESSION_KEY, on ? "1" : "0"); }catch(e){}
+  /* بدل ما كانت isRecognizedAdmin بتقرا من localStorage، دلوقتي بتسأل الباك إند */
+  function checkAuth(){
+    return api("/api/auth/me", { method:"GET" })
+      .then(function(data){ return !!(data && data.authenticated && data.site === SITE_ID); })
+      .catch(function(){ return false; });
   }
 
   function openPanel(){
@@ -737,12 +764,15 @@
     document.getElementById("loginMsg").textContent = "";
   }
 
-  if(isRecognizedAdmin()){
-    fab.classList.add("visible");
-  }
+  checkAuth().then(function(ok){
+    if(ok) fab.classList.add("visible");
+  });
+
   fab.addEventListener("click", function(){
-    if(isRecognizedAdmin()) openPanel();
-    else openLogin();
+    checkAuth().then(function(ok){
+      if(ok) openPanel();
+      else openLogin();
+    });
   });
 
   if(window.location.hash === SECRET_HASH){
@@ -760,19 +790,26 @@
   document.getElementById("loginBtn").addEventListener("click", function(){
     var val = document.getElementById("adminPass").value;
     var msg = document.getElementById("loginMsg");
-    if(val === ADMIN_PASS){
-      setRecognizedAdmin(true);
-      fab.classList.add("visible");
-      openPanel();
-    } else {
-      msg.textContent = "كلمة المرور غلط، جرّب تاني.";
-    }
+    var btn = document.getElementById("loginBtn");
+    btn.disabled = true;
+    msg.textContent = "";
+    api("/api/auth/login", { method:"POST", body:{ site: SITE_ID, password: val } })
+      .then(function(){
+        fab.classList.add("visible");
+        openPanel();
+      })
+      .catch(function(e){
+        msg.textContent = e.status === 401 ? "كلمة المرور غلط، جرّب تاني." : (e.message || "حصل خطأ، حاول تاني.");
+      })
+      .finally(function(){ btn.disabled = false; });
   });
 
   document.getElementById("logoutBtn").addEventListener("click", function(){
-    setRecognizedAdmin(false);
-    fab.classList.remove("visible");
-    overlay.classList.remove("open");
+    api("/api/auth/logout", { method:"POST" })
+      .finally(function(){
+        fab.classList.remove("visible");
+        overlay.classList.remove("open");
+      });
   });
 
   document.getElementById("addLinkBtn").addEventListener("click", function(){
@@ -780,6 +817,7 @@
     var label = document.getElementById("labelInput").value.trim();
     var url = document.getElementById("urlInput").value.trim();
     var msg = document.getElementById("addMsg");
+    var btn = document.getElementById("addLinkBtn");
 
     if(!label || !url){
       msg.className = "msg error";
@@ -793,29 +831,22 @@
       return;
     }
 
-    var list = getLinks();
-    var ok;
-    if(editingId){
-      list = list.map(function(l){
-        return l.id === editingId ? { id:l.id, platform:platform, label:label, url:url } : l;
-      });
-      ok = saveLinks(list);
-      if(ok) msg.textContent = "تم حفظ التعديل.";
-    } else {
-      list.push({ id:makeId(), platform:platform, label:label, url:url });
-      ok = saveLinks(list);
-      if(ok) msg.textContent = "تمت إضافة الرابط.";
-    }
+    btn.disabled = true;
+    var req = editingId
+      ? api("/api/links/" + encodeURIComponent(editingId), { method:"PUT", body:{ platform:platform, label:label, url:url } })
+      : api("/api/links", { method:"POST", body:{ platform:platform, label:label, url:url } });
 
-    if(ok){
+    req.then(function(){
       msg.className = "msg ok";
+      msg.textContent = editingId ? "تم حفظ التعديل." : "تمت إضافة الرابط.";
       resetForm();
-      renderManageList();
-      renderLinks();
-    } else {
+      return Promise.all([renderManageList(), renderLinks()]);
+    }).catch(function(e){
       msg.className = "msg error";
-      msg.textContent = "المتصفح مانعش الحفظ، جرّب تفتح الموقع بعد رفعه على الاستضافة.";
-    }
+      msg.textContent = e.message || "حصل خطأ، حاول تاني.";
+    }).finally(function(){
+      btn.disabled = false;
+    });
   });
 
   renderLinks();
